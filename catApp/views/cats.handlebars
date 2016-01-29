@@ -1,0 +1,20 @@
+<h1>Welcome to the Cat Store!</h1>
+
+<ul>
+{{#each cats}}
+	<li>
+		Name: {{name}}
+	</li>
+		<ul>
+			<li>
+				Age: {{age}}
+			</li>
+			<li>Colors:</li>
+			<ul>
+				{{#each colors}}
+					<li>{{this}}</li>
+				{{/each}}
+			</ul>
+		</ul>
+{{/each}}
+</ul>
