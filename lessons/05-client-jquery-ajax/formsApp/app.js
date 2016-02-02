@@ -4,6 +4,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
+var getCat = require('./routes/getCat.js');
 
 var index = require('./routes/index');
 
@@ -19,5 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', index.home);
+app.get('/getCat', getCat.getCatGET);
+app.post('/getCat', getCat.getCatPOST);
 
 app.listen(3000);
