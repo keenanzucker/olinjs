@@ -31,13 +31,6 @@ function ranColors(){
      return choosen;
 }
 
-// function sortByAge(cats){
-//  // Attributed sort function to stackoverflow thread on sorting arrys of objects
-//  return cats.sort(function(a,b){
-//      return parseInt(a.age) - parseInt(b.age);
-//  });
-// }
-
 function sortByColor(cats, color){
     var sortedCats = [];
 
@@ -93,13 +86,6 @@ router.create = function(req, res, next){
 }
 
 router.print = function(req, res, next) {
-    // var cats = CatDB.find(function(err, cats).exec(function(err, cats))
-    // {
-    //  if (err) console.error(err);
-    //  console.log(cats);
-    // });
-    // // sortByAge(cats);
-    // res.render("cats", {cats: cats});
 
     CatDB.find().sort({age: -1}).exec(function(err, cats) {
         if (err) console.log(err);
@@ -127,7 +113,7 @@ router.ageRange = function(req, res, next){
     var ageOne = req.params.ageone;
     var ageTwo = req.params.agetwo;
 
-    CatDB.find().sort({age: -1}).exec(function(err, cats) {
+      CatDB.find({age:{$gt: ageOne, $lt: ageTwo}}).sort({age: -1}).exec(function(err, cats) {
         if (err) console.log(err);
         else {
             cats = ageRangeSort(cats, ageOne, ageTwo);
@@ -135,6 +121,7 @@ router.ageRange = function(req, res, next){
             console.log("Showing cats in range: " + ageOne + " to " + ageTwo);
         }
     });
+
 }
 
 router.kill = function(req, res, next){
