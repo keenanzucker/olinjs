@@ -4,6 +4,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
+var mongoose = require('mongoose');
+
+
 
 var routes = require('./routes/router');
 var app = express();
@@ -23,9 +26,10 @@ app.get('/cats', routes.print);
 app.get('/cats/new', routes.create);
 app.get('/cats/bycolor/:color', routes.sortColors);
 app.get('/cats/delete/old', routes.kill);
+app.get('/cats/range/:ageone/:agetwo', routes.ageRange);
 
 
-
+mongoose.connect('mongodb://localhost/test');
 var PORT = process.env.PORT || 3000;
 
 app.listen(PORT, function() {
