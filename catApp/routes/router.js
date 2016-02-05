@@ -73,14 +73,26 @@ function indexOfOldest(cats){
 }
 
 router.create = function(req, res, next){
-    var newCat = new Cat(ranAge(), ranName(), ranColors())
-    var createCat = new CatDB(newCat);
+    // var newCat = new Cat(ranAge(), ranName(), ranColors())
+    // var createCat = new CatDB(newCat);
+    //this works, but you could instead, but I liked that you used a constructor
+    var createCat = new CatDB({
+        age: ranAge(),
+        name: ranName(),
+        colors: ranColors()
+    })
     console.log(createCat);
 
     createCat.save(function(err){
-        if (err) return console.error(err);
+        if (err) {
+            console.error(err);
+            //you should tell the client when an error happens
+            res.status(500).send('Error problem saving');
+        }
         else {
             console.log("New Cat Created!");
+            res.end(".") //Don't forget to do something to terminate request
+            //that means: sendfile ,send, json, redirect, render, end, and others I can't remember 
         }
     })
 }
@@ -98,10 +110,10 @@ router.print = function(req, res, next) {
 
 router.sortColors = function(req, res, next){
      var colorToSort = req.params.color;
-    CatDB.find().sort({age: -1}).exec(function(err, cats) {
+    CatDB.find({colors: colorToSort}).sort({age: -1}).exec(function(err, cats) {
         if (err) console.log(err);
         else {
-            cats = sortByColor(cats, colorToSort);
+            // cats = sortByColor(cats, colorToSort); //you can do this with mongoose. see line 113.
             res.render("cats", {cats: cats});
             console.log("Showing all dem cats by color: " + colorToSort);
         }
@@ -116,7 +128,7 @@ router.ageRange = function(req, res, next){
       CatDB.find({age:{$gt: ageOne, $lt: ageTwo}}).sort({age: -1}).exec(function(err, cats) {
         if (err) console.log(err);
         else {
-            cats = ageRangeSort(cats, ageOne, ageTwo);
+            // cats = ageRangeSort(cats, ageOne, ageTwo); //Line unnecessary you do this with mongo
             res.render("cats", {cats: cats});
             console.log("Showing cats in range: " + ageOne + " to " + ageTwo);
         }
@@ -125,16 +137,19 @@ router.ageRange = function(req, res, next){
 }
 
 router.kill = function(req, res, next){
-    var cats = CatDB.find(function(err, cats){
-        if (err) console.error(err);
-        console.log(cats);
-    });
-    var oldest = indexOfOldest(cats);
+    //unnecessary
+    // var cats = CatDB.find(function(err, cats){
+    //     if (err) console.error(err);
+    //     console.log(cats);
+    // });
+    // var oldest = indexOfOldest(cats);
 
     CatDB.findOneAndRemove({}, {sort:{age: -1}}, function(err){
         if (err) console.log(err);
+        res.send("Dead"); //end request
     });
     console.log("You killed the oldest cat!");
+    
 }
 
 module.exports = router; 
